@@ -1,6 +1,6 @@
-# Dotfiles
+# dotfiles
 
-## Setup on new machine
+## Fresh setup
 
 ```
 git clone https://github.com/freddie-w/dotfiles ~/.dotfiles
@@ -8,7 +8,7 @@ cd ~/.dotfiles
 ./install
 ```
 
-## Update an existing installation
+## Update existing installation
 
 ```
 cd ~/.dotfiles
