@@ -6,6 +6,11 @@
 
 - link:
     ~/.config/nvim: nvim
+    ~/.zshrc: .zshrc
+    ~/.vimrc: .vimrc
+
+- create:
+    - ~/.zshrc.local
 
 - shell:
   - [git submodule update --init --recursive, Installing submodules]
