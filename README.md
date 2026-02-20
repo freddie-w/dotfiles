@@ -1,6 +1,6 @@
 # dotfiles
 
-## Fresh setup
+## Fresh install
 
 ```
 git clone https://github.com/freddie-w/dotfiles ~/.dotfiles
