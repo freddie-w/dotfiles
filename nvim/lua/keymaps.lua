@@ -12,4 +12,6 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 
 vim.keymap.set('n', '<leader>bd', ':bd<CR>', { desc = 'Delete current buffer' })
 
-vim.keymap.set('n', '<leader>e', function() require('mini.files').open() end, { desc = 'Open file explorer' })
+-- vim.keymap.set('n', '<leader>e', function() require('mini.files').open() end, { desc = 'Open file explorer' })
+
+vim.keymap.set('n', '<leader>o', ':Oil<CR>', { desc = 'Open oil' })

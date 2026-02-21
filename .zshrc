@@ -20,6 +20,7 @@ plugins=(
 source $ZSH/oh-my-zsh.sh
 
 alias lg="lazygit"
+alias cd="z"
 
 
 export NVM_DIR="$HOME/.nvm"
