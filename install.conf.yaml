@@ -9,9 +9,7 @@
     ~/.zshrc: .zshrc
     ~/.vimrc: .vimrc
 
-- create:
-    - ~/.zshrc.local
-
 - shell:
+  - [touch ~/.zshrc.local, Creating zsh local file]
   - [git submodule update --init --recursive, Installing submodules]
 

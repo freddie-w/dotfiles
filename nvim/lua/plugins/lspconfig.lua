@@ -66,9 +66,10 @@ return {
         -- or a suggestion from your LSP for this to activate.
         map('gra', vim.lsp.buf.code_action, '[G]oto Code [A]ction', { 'n', 'x' })
 
-        -- WARN: This is not Goto Definition, this is Goto Declaration.
+        -- WARN: This is not Goto Debinition, this is Goto Declaration.
         --  For example, in C this would take you to the header.
         map('grD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+        map('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
 
         -- The following two autocommands are used to highlight references of the
         -- word under your cursor when your cursor rests there for a little while.
@@ -129,6 +130,12 @@ return {
       --
       -- But for many setups, the LSP (`ts_ls`) will work just fine
       -- ts_ls = {},
+      ts_ls = {},
+      html = {},
+      cssls = {},
+      tailwindcss = {},
+      jsonls = {},
+      emmet_ls = {},
     }
 
     -- Ensure the servers and tools above are installed
@@ -143,6 +150,7 @@ return {
       'lua_ls', -- Lua Language server
       'stylua', -- Used to format Lua code
       -- You can add other tools here that you want Mason to install
+      'prettierd',
     })
 
     require('mason-tool-installer').setup { ensure_installed = ensure_installed }

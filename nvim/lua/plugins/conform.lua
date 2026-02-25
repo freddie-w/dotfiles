@@ -13,9 +13,7 @@ return { -- Autoformat
   opts = {
     notify_on_error = false,
     format_on_save = function(bufnr)
-      -- Disable "format_on_save lsp_fallback" for languages that don't
-      -- have a well standardized coding style. You can add additional
-      -- languages here or re-enable it for the disabled ones.
+      -- Disable "format_on_save" for filetypes with non-standard style
       local disable_filetypes = { c = true, cpp = true }
       if disable_filetypes[vim.bo[bufnr].filetype] then
         return nil
@@ -27,7 +25,18 @@ return { -- Autoformat
       end
     end,
     formatters_by_ft = {
+      -- Lua
       lua = { 'stylua' },
+
+      -- JS/TS/JSX/TSX/CSS/HTML/JSON
+      javascript = { 'prettierd' },
+      typescript = { 'prettierd' },
+      javascriptreact = { 'prettierd' },
+      typescriptreact = { 'prettierd' },
+      css = { 'prettierd' },
+      html = { 'prettierd' },
+      json = { 'prettierd' },
+      markdown = { 'prettierd' },
     },
   },
 }
