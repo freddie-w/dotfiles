@@ -17,7 +17,6 @@ require('lazy').setup {
   require 'plugins.conform',
   require 'plugins.blink',
   require 'plugins.tokyonight',
-  require 'plugins.mini',
   require 'plugins.which-key',
   require 'plugins.gitsigns',
   require 'plugins.treesitter',

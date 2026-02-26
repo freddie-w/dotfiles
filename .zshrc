@@ -19,8 +19,18 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 
+# Aliases
 alias lg="lazygit"
 alias cd="z"
+
+# Functions
+count_branch_commits() {
+    if [ -z "$1" ]; then
+        echo "Usage: count_branch_commits <base-branch>"
+        return 1
+    fi
+    git rev-list --count "$1"..HEAD
+}
 
 
 export NVM_DIR="$HOME/.nvm"
