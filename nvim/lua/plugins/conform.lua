@@ -25,10 +25,7 @@ return { -- Autoformat
       end
     end,
     formatters_by_ft = {
-      -- Lua
       lua = { 'stylua' },
-
-      -- JS/TS/JSX/TSX/CSS/HTML/JSON
       javascript = { 'prettierd' },
       typescript = { 'prettierd' },
       javascriptreact = { 'prettierd' },
