@@ -21,4 +21,5 @@ require('lazy').setup {
   require 'plugins.gitsigns',
   require 'plugins.treesitter',
   require 'plugins.oil',
+  require 'plugins.diffview',
 }
