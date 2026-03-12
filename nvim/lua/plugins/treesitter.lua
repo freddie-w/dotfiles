@@ -1,6 +1,7 @@
 return {
   'nvim-treesitter/nvim-treesitter',
   build = ':TSUpdate',
+  branch = 'master',
   config = function()
     local filetypes = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
     require('nvim-treesitter.configs').setup {

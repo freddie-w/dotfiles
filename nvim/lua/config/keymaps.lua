@@ -9,6 +9,8 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 
 -- Buffers
 vim.keymap.set('n', '<leader>bd', ':bd<CR>', { desc = 'Close current buffer' })
+vim.keymap.set('n', ']b', ':bnext<CR>', { desc = 'Go to next buffer' })
+vim.keymap.set('n', ']b', ':bprev<CR>', { desc = 'Go to previous buffer' })
 
 -- Windows
 vim.keymap.set('n', '<leader>|', '<C-w>v', { desc = 'Vertical split' })

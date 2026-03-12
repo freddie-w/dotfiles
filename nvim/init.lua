@@ -18,16 +18,4 @@ end
 local rtp = vim.opt.rtp
 rtp:prepend(lazypath)
 
-require('lazy').setup {
-  require 'plugins.autopairs',
-  require 'plugins.telescope',
-  require 'plugins.lspconfig',
-  require 'plugins.conform',
-  require 'plugins.blink',
-  require 'plugins.tokyonight',
-  require 'plugins.which-key',
-  require 'plugins.gitsigns',
-  require 'plugins.treesitter',
-  require 'plugins.oil',
-  require 'plugins.diffview',
-}
+require('lazy').setup 'plugins'
