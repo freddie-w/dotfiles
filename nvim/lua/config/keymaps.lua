@@ -23,17 +23,5 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
--- Plugins
-
 -- Toggle oil
 vim.keymap.set('n', '<leader>e', function() require('oil').toggle_float() end, { desc = 'Open Oil' })
-
--- Toggle diffview
-vim.keymap.set('n', '<leader>g', function()
-  local view = require('diffview.lib').get_current_view()
-  if view then
-    vim.cmd 'DiffviewClose'
-  else
-    vim.cmd 'DiffviewOpen'
-  end
-end, { desc = 'Toggle Diffview' })
