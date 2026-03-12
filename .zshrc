@@ -26,6 +26,7 @@ source $ZSH/oh-my-zsh.sh
 alias lg="lazygit"
 alias cd="z"
 alias n='nvim'
+alias gbrecent="git for-each-ref --sort=committerdate refs/heads/ --format='%(committerdate:relative) %(refname:short)'"
 
 # Functions
 count_branch_commits() {

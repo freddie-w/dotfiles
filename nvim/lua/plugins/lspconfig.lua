@@ -22,7 +22,7 @@ return {
 
         -- Execute a code action, usually your cursor needs to be on top of an error
         -- or a suggestion from your LSP for this to activate.
-        map('gra', vim.lsp.buf.code_action, '[G]oto Code [A]ction', { 'n', 'x' })
+        map('<leader>ca', vim.lsp.buf.code_action, '[G]oto Code [A]ction', { 'n', 'x' })
 
         map('grD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
         map('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
@@ -68,7 +68,11 @@ return {
       cssls = {},
       tailwindcss = {},
       jsonls = {},
-      emmet_ls = {},
+      eslint = {
+        settings = {
+          workingDirectories = { mode = 'auto' },
+        },
+      },
     }
 
     local ensure_installed = vim.tbl_keys(servers or {})
