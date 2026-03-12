@@ -17,6 +17,10 @@ vim.o.undofile = true
 vim.o.ignorecase = true
 vim.o.smartcase = true
 
+-- Search highlighting
+vim.o.hlsearch = true  -- Highlight search results
+vim.o.incsearch = true -- Incremental search
+
 -- Keep signcolumn on by default
 vim.o.signcolumn = 'yes'
 
