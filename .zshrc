@@ -5,6 +5,7 @@ fi
 export PATH=$HOME/bin:/usr/local/bin:$PATH
 export PATH="/opt/homebrew/bin:$PATH"
 export PATH=$HOME/.cargo/bin:$PATH
+export CONFIG_DIR="$HOME/.config/lazygit"
 
 # Path to oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
@@ -26,7 +27,6 @@ source $ZSH/oh-my-zsh.sh
 alias lg="lazygit"
 alias cd="z"
 alias n='nvim'
-alias gbrecent="git for-each-ref --sort=committerdate refs/heads/ --format='%(committerdate:relative) %(refname:short)'"
 
 # Functions
 count_branch_commits() {

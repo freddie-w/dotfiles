@@ -6,8 +6,8 @@
 
 - link:
     ~/.config/nvim: nvim
+    ~/.config/lazygit: lazygit
     ~/.zshrc: .zshrc
-    ~/.vimrc: .vimrc
 
 - shell:
   - [touch ~/.zshrc.local, Creating zsh local file]
