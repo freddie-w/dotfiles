@@ -25,3 +25,31 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 
 -- Toggle oil
 vim.keymap.set('n', '<leader>e', function() require('oil').toggle_float() end, { desc = 'Open Oil' })
+
+-- Markdown
+vim.keymap.set('n', '<leader>nn', function()
+  local notes_dir = '~/notes/'
+  local today = os.date '%Y-%m-%d'
+  if type(today) ~= 'string' then today = '' end
+
+  local name = vim.fn.input('Note name: ', today)
+  if name == '' then return end
+
+  -- Replace spaces with dashes for filenames
+  local filename = notes_dir .. name:gsub('%s+', '-') .. '.md'
+
+  -- Frontmatter + template
+  local template = {
+    '---',
+    'title: ' .. name,
+    'tags: []',
+    'created: ' .. os.date '%Y-%m-%d',
+    '---',
+    '',
+    '# ' .. name,
+    '',
+  }
+
+  -- Open the new file
+  vim.cmd('edit ' .. filename)
+end, { desc = "Create new note with today's date" })
