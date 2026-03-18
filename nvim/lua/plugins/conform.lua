@@ -33,7 +33,7 @@ return { -- Autoformat
       css = { 'prettierd' },
       html = { 'prettierd' },
       json = { 'prettierd' },
-      markdown = { 'prettierd' },
+      jsonc = { 'prettierd' },
     },
   },
 }
