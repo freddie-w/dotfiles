@@ -11,7 +11,7 @@ return {
       ['<CR>'] = { 'select_and_accept', 'fallback' }, -- works in insert and select mode
     },
     completion = {
-      documentation = { auto_show = false, auto_show_delay_ms = 500 },
+      documentation = { auto_show = false, auto_show_delay_ms = 250 },
     },
     sources = {
       default = { 'lsp', 'path' },

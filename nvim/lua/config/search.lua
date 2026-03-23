@@ -1,7 +1,6 @@
 -- Enhanced search functionality with inline count display
 
--- Create namespace and augroup
-local search_ns = vim.api.nvim_create_namespace('search_count')
+local search_ns = vim.api.nvim_create_namespace 'search_count'
 local search_group = vim.api.nvim_create_augroup('search_count', { clear = true })
 local search_extmark_id = nil
 
@@ -27,13 +26,11 @@ local function show_search_count()
   end
 end
 
--- Show search count after search
+-- Show search count after search term
 vim.api.nvim_create_autocmd('CmdlineLeave', {
   group = search_group,
   callback = function()
-    if vim.v.event.cmdtype == '/' or vim.v.event.cmdtype == '?' then
-      vim.defer_fn(show_search_count, 10)
-    end
+    if vim.v.event.cmdtype == '/' or vim.v.event.cmdtype == '?' then vim.defer_fn(show_search_count, 10) end
   end,
 })
 
@@ -49,16 +46,12 @@ vim.api.nvim_create_autocmd('CursorMoved', {
   end,
 })
 
--- Setup keymaps with search count clearing
+-- Keymaps
 vim.keymap.set('n', '<Esc>', function()
-  vim.cmd('nohlsearch')
+  vim.cmd 'nohlsearch'
   vim.api.nvim_buf_clear_namespace(0, search_ns, 0, -1)
 end, { desc = 'Clear search highlights' })
 
-vim.keymap.set('n', 'n', function()
-  vim.cmd('normal! n')
-end, { desc = 'Next search result' })
+vim.keymap.set('n', 'n', function() vim.cmd 'normal! n' end, { desc = 'Next search result' })
 
-vim.keymap.set('n', 'N', function()
-  vim.cmd('normal! N')
-end, { desc = 'Previous search result' })
+vim.keymap.set('n', 'N', function() vim.cmd 'normal! N' end, { desc = 'Previous search result' })

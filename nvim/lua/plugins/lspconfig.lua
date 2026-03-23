@@ -62,6 +62,7 @@ return {
 
     local capabilities = require('blink.cmp').get_lsp_capabilities()
 
+    -- Ensure these language servers are installed
     local servers = {
       vtsls = {},
       html = {},
