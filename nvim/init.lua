@@ -6,16 +6,24 @@ require 'config.diagnostics'
 require 'config.statusline'
 require 'config.search'
 
--- [[ Install `lazy.nvim` plugin manager ]]
-local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
-if not (vim.uv or vim.loop).fs_stat(lazypath) then
-  local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
-  local out = vim.fn.system { 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath }
-  if vim.v.shell_error ~= 0 then error('Error cloning lazy.nvim:\n' .. out) end
-end
+vim.api.nvim_create_autocmd('PackChanged', {
+  callback = function(ev)
+    local name, kind = ev.data.spec.name, ev.data.kind
+    if name == 'nvim-treesitter' and kind == 'update' then
+      if not ev.data.active then vim.cmd.packadd 'nvim-treesitter' end
+      vim.cmd 'TSUpdate'
+    end
+  end,
+})
 
----@type vim.Option
-local rtp = vim.opt.rtp
-rtp:prepend(lazypath)
+vim.pack.add {
+  'https://github.com/folke/tokyonight.nvim',
+  'https://github.com/nvim-tree/nvim-web-devicons',
+}
 
-require('lazy').setup 'plugins'
+vim.cmd.colorscheme 'tokyonight'
+
+-- TODO
+-- /027   lspconfig.lua - setup but missing some config?
+-- /035   treesitter.lua - setup but missing some config?
+-- inline diagnostics dont seem to work

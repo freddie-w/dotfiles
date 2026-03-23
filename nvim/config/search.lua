@@ -15,8 +15,8 @@ local function show_search_count()
   clear_search_count()
 
   local ok, search_count = pcall(vim.fn.searchcount, { maxcount = 999 })
-  if ok and search_count.total > 0 then
-    local msg = string.format(' [%d/%d]', search_count.current, search_count.total)
+  if ok and search_count and (search_count.total or 0) > 0 then
+    local msg = string.format(' [%d/%d]', search_count.current or 0, search_count.total or 0)
     local row = vim.api.nvim_win_get_cursor(0)[1] - 1
 
     search_extmark_id = vim.api.nvim_buf_set_extmark(0, search_ns, row, 0, {
@@ -25,6 +25,7 @@ local function show_search_count()
     })
   end
 end
+
 
 -- Show search count after search term
 vim.api.nvim_create_autocmd('CmdlineLeave', {
