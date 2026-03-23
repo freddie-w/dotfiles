@@ -1,5 +1,11 @@
 local M = {}
 
+function M.git_branch()
+  local branch = vim.b.gitsigns_head
+  if branch then return '  ' .. branch end
+  return ''
+end
+
 function M.statusline()
   local mode = vim.fn.mode()
   local mode_str = ''
@@ -24,6 +30,7 @@ function M.statusline()
     ' %f', -- full file path
     '%r', -- readonly
     '%m', -- modified
+    ' %{v:lua.require("config.statusline").git_branch()}',
     '%=', -- separator
     '%{&filetype}', -- filetype
     ' %3l:%-2c ', -- line:column

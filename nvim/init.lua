@@ -27,3 +27,4 @@ vim.cmd.colorscheme 'tokyonight'
 -- /027   lspconfig.lua - setup but missing some config?
 -- /035   treesitter.lua - setup but missing some config?
 -- inline diagnostics dont seem to work
+-- add nvim-lint?
