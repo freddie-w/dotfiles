@@ -1,5 +1,7 @@
 -- General
 vim.keymap.set('i', 'jj', '<Esc>')
+vim.keymap.set('n', 'H', '^', { desc = 'Go to start of line' })
+vim.keymap.set('n', 'L', '$', { desc = 'Go to end of line' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 vim.keymap.set('n', ']d', function() vim.diagnostic.jump { count = 1 } end, { desc = 'Next diagnostic' })
 vim.keymap.set('n', '[d', function() vim.diagnostic.jump { count = -1 } end, { desc = 'Previous diagnostic' })

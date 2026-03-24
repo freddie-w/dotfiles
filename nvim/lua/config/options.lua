@@ -18,7 +18,7 @@ vim.o.ignorecase = true
 vim.o.smartcase = true
 
 -- Search highlighting
-vim.o.hlsearch = true  -- Highlight search results
+vim.o.hlsearch = true -- Highlight search results
 vim.o.incsearch = true -- Incremental search
 
 -- Keep signcolumn on by default
