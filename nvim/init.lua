@@ -21,10 +21,4 @@ vim.pack.add {
   'https://github.com/nvim-tree/nvim-web-devicons',
 }
 
-vim.cmd.colorscheme 'tokyonight'
-
--- TODO
--- /027   lsplua - setup but missing some config?
--- /035   treesitter.lua - setup but missing some
--- inline diagnostics dont seem to work
--- add nvim-lint?
+vim.cmd [[colorscheme tokyonight]]
