@@ -30,7 +30,7 @@ function M.statusline()
     ' %f', -- full file path
     '%r', -- readonly
     '%m', -- modified
-    ' %{v:lua.require("config.statusline").git_branch()}',
+    ' %{v:lua.require("statusline").git_branch()}',
     '%=', -- separator
     '%{&filetype}', -- filetype
     ' %3l:%-2c ', -- line:column
@@ -45,6 +45,6 @@ vim.cmd 'highlight StatusLineCommand guifg=#ffffff guibg=#87005f'
 vim.cmd 'highlight StatusLineReplace guifg=#ffffff guibg=#af0000'
 vim.cmd 'highlight StatusLineTerminal guifg=#ffffff guibg=#44475a'
 
-vim.o.statusline = '%!v:lua.require("config.statusline").statusline()'
+vim.o.statusline = '%!v:lua.require("statusline").statusline()'
 
 return M

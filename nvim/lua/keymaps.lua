@@ -26,3 +26,6 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- Toggle oil
 vim.keymap.set('n', '<leader>e', function() require('oil').toggle_float() end, { desc = 'Open Oil' })
 
+-- Incremental selection
+vim.keymap.set('x', 'n', function() require('vim.treesitter._select').select_parent(vim.v.count1) end, { desc = 'Expand selection (TS parent)' })
+vim.keymap.set('x', 'N', function() require('vim.treesitter._select').select_child(vim.v.count1) end, { desc = 'Shrink selection (TS child)' })

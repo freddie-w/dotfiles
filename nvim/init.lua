@@ -1,10 +1,10 @@
-require 'config.globals'
-require 'config.options'
-require 'config.keymaps'
-require 'config.autocmds'
-require 'config.diagnostics'
-require 'config.statusline'
-require 'config.search'
+require 'globals'
+require 'options'
+require 'keymaps'
+require 'autocmds'
+require 'diagnostics'
+require 'statusline'
+require 'search'
 
 vim.api.nvim_create_autocmd('PackChanged', {
   callback = function(ev)
@@ -24,7 +24,7 @@ vim.pack.add {
 vim.cmd.colorscheme 'tokyonight'
 
 -- TODO
--- /027   lspconfig.lua - setup but missing some config?
--- /035   treesitter.lua - setup but missing some config?
+-- /027   lsplua - setup but missing some config?
+-- /035   treesitter.lua - setup but missing some
 -- inline diagnostics dont seem to work
 -- add nvim-lint?
