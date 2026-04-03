@@ -5,6 +5,7 @@ require 'autocmds'
 require 'diagnostics'
 require 'statusline'
 require 'search'
+require 'gutter-mark'
 
 vim.api.nvim_create_autocmd('PackChanged', {
   callback = function(ev)
