@@ -1,5 +1,7 @@
 -- General
 vim.keymap.set('i', 'jj', '<Esc>')
+
+-- Diagnostics
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 vim.keymap.set('n', ']d', function() vim.diagnostic.jump { count = 1 } end, { desc = 'Next diagnostic' })
 vim.keymap.set('n', '[d', function() vim.diagnostic.jump { count = -1 } end, { desc = 'Previous diagnostic' })
@@ -27,5 +29,5 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 vim.keymap.set('n', '<leader>e', function() require('oil').toggle_float() end, { desc = 'Open Oil' })
 
 -- Incremental selection
-vim.keymap.set('x', 'n', function() require('vim.treesitter._select').select_parent(vim.v.count1) end, { desc = 'Expand selection (TS parent)' })
-vim.keymap.set('x', 'N', function() require('vim.treesitter._select').select_child(vim.v.count1) end, { desc = 'Shrink selection (TS child)' })
+vim.keymap.set('x', 'n', function() require('vim.treesitter._select').select_parent(vim.v.count1) end, { desc = 'Expand selection' })
+vim.keymap.set('x', 'N', function() require('vim.treesitter._select').select_child(vim.v.count1) end, { desc = 'Shrink selection' })
