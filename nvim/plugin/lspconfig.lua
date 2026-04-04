@@ -21,6 +21,45 @@ vim.lsp.config('lua_ls', {
   },
 })
 
-vim.lsp.enable { 'lua_ls', 'vtsls' }
+vim.lsp.enable { 'lua_ls', 'vtsls', 'tailwindcss' }
 
-vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = 'Go to definition' })
+vim.api.nvim_create_autocmd('LspAttach', {
+  group = vim.api.nvim_create_augroup('lsp-attach', { clear = true }),
+  callback = function(event)
+    local map = function(keys, func, desc) vim.keymap.set('n', keys, func, { buffer = event.buf, desc = desc }) end
+
+    map('gd', vim.lsp.buf.definition, 'Go to definition')
+
+    -- format on save
+    vim.api.nvim_create_autocmd('BufWritePre', {
+      pattern = '*',
+      callback = function(args) require('conform').format { bufnr = args.buf } end,
+    })
+
+    local client = vim.lsp.get_client_by_id(event.data.client_id)
+
+    -- highlight references on hover
+    if client and client:supports_method('textDocument/documentHighlight', event.buf) then
+      local highlight_augroup = vim.api.nvim_create_augroup('lsp-highlight', { clear = false })
+      vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
+        buffer = event.buf,
+        group = highlight_augroup,
+        callback = vim.lsp.buf.document_highlight,
+      })
+
+      vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
+        buffer = event.buf,
+        group = highlight_augroup,
+        callback = vim.lsp.buf.clear_references,
+      })
+
+      vim.api.nvim_create_autocmd('LspDetach', {
+        group = vim.api.nvim_create_augroup('lsp-detach', { clear = true }),
+        callback = function(event2)
+          vim.lsp.buf.clear_references()
+          vim.api.nvim_clear_autocmds { group = 'lsp-highlight', buffer = event2.buf }
+        end,
+      })
+    end
+  end,
+})
