@@ -26,12 +26,17 @@ vim.lsp.enable { 'lua_ls', 'vtsls', 'tailwindcss' }
 vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('lsp-attach', { clear = true }),
   callback = function(event)
-    local map = function(keys, func, desc) vim.keymap.set('n', keys, func, { buffer = event.buf, desc = desc }) end
+    local map = function(keys, func, desc, mode)
+      mode = mode or 'n'
+      vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
+    end
 
-    -- keymaps
+    -- Keymaps
+    map('grn', vim.lsp.buf.rename, '[R]e[n]ame')
     map('gd', vim.lsp.buf.definition, 'Go to definition')
+    map('<leader>ca', vim.lsp.buf.code_action, '[G]oto Code [A]ction', { 'n', 'x' })
 
-    -- format on save
+    -- Format on save
     vim.api.nvim_create_autocmd('BufWritePre', {
       pattern = '*',
       callback = function(args) require('conform').format { bufnr = args.buf } end,
@@ -39,7 +44,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
     local client = vim.lsp.get_client_by_id(event.data.client_id)
 
-    -- highlights references on hover
+    -- Highlight references on hover
     if client and client:supports_method('textDocument/documentHighlight', event.buf) then
       local highlight_augroup = vim.api.nvim_create_augroup('lsp-highlight', { clear = false })
       vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
