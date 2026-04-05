@@ -1,3 +1,8 @@
+-- globals
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ' '
+vim.g.have_nerd_font = true
+
 vim.o.number = true
 vim.o.relativenumber = true
 
@@ -18,7 +23,7 @@ vim.o.ignorecase = true
 vim.o.smartcase = true
 
 -- Search highlighting
-vim.o.hlsearch = true  -- Highlight search results
+vim.o.hlsearch = true -- Highlight search results
 vim.o.incsearch = true -- Incremental search
 
 -- Keep signcolumn on by default

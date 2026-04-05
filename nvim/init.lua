@@ -1,4 +1,3 @@
-require 'globals'
 require 'options'
 require 'keymaps'
 require 'autocmds'
@@ -16,10 +15,3 @@ vim.api.nvim_create_autocmd('PackChanged', {
     end
   end,
 })
-
-vim.pack.add {
-  'https://github.com/folke/tokyonight.nvim',
-  'https://github.com/nvim-tree/nvim-web-devicons',
-}
-
-vim.cmd [[colorscheme tokyonight]]
