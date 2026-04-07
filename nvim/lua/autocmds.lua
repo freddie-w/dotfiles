@@ -21,3 +21,32 @@ vim.api.nvim_create_autocmd({ 'WinLeave', 'BufLeave' }, {
   group = 'active_cursorline',
   callback = function() vim.opt_local.cursorline = false end,
 })
+
+-- Auto close tags
+vim.api.nvim_create_autocmd('InsertCharPre', {
+  pattern = { '*.html', '*.jsx', '*.tsx' },
+  callback = function()
+    if vim.v.char ~= '>' then return end
+
+    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+    local line = vim.api.nvim_get_current_line()
+
+    -- Text before cursor
+    local before = line:sub(1, col)
+
+    -- Match opening tag with optional attributes:
+    -- <div
+    -- <div class=""
+    -- <Component prop={x}
+    local tag = before:match '<([%w%-]+)[^<>]*$'
+
+    -- Ignore closing tags or self-closing tags
+    if tag and not before:match '</' and not before:match '/%s*$' then
+      vim.schedule(function()
+        vim.api.nvim_put({ '</' .. tag .. '>' }, 'c', true, true)
+        -- place cursor between tags
+        vim.api.nvim_win_set_cursor(0, { row, col + 1 })
+      end)
+    end
+  end,
+})
