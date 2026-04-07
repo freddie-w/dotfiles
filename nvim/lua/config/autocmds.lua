@@ -21,23 +21,3 @@ vim.api.nvim_create_autocmd({ 'WinLeave', 'BufLeave' }, {
   group = 'active_cursorline',
   callback = function() vim.opt_local.cursorline = false end,
 })
-
--- Auto-continue markdown checklists
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = 'markdown',
-  callback = function()
-    -- Use an insert mode Enter mapping
-    vim.keymap.set('i', '<CR>', function()
-      local line = vim.api.nvim_get_current_line()
-      -- Match lines that start with "- [ ]" or "- [x]"
-      local prefix = line:match '^([%s]*%- %[.%])%s*'
-      if prefix then
-        -- Insert a new line with the same prefix
-        return '\n' .. prefix .. ' '
-      else
-        -- Default Enter behavior
-        return '\n'
-      end
-    end, { expr = true, buffer = true })
-  end,
-})

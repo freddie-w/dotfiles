@@ -1,7 +1,5 @@
 -- General
 vim.keymap.set('i', 'jj', '<Esc>')
-vim.keymap.set('n', 'H', '^', { desc = 'Go to start of line' })
-vim.keymap.set('n', 'L', '$', { desc = 'Go to end of line' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 vim.keymap.set('n', ']d', function() vim.diagnostic.jump { count = 1 } end, { desc = 'Next diagnostic' })
 vim.keymap.set('n', '[d', function() vim.diagnostic.jump { count = -1 } end, { desc = 'Previous diagnostic' })
@@ -27,31 +25,3 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 
 -- Toggle oil
 vim.keymap.set('n', '<leader>e', function() require('oil').toggle_float() end, { desc = 'Open Oil' })
-
--- Markdown
-vim.keymap.set('n', '<leader>nn', function()
-  local notes_dir = '~/notes/'
-  local today = os.date '%Y-%m-%d'
-  if type(today) ~= 'string' then today = '' end
-
-  local name = vim.fn.input('Note name: ', today)
-  if name == '' then return end
-
-  -- Replace spaces with dashes for filenames
-  local filename = notes_dir .. name:gsub('%s+', '-') .. '.md'
-
-  -- Frontmatter + template
-  local template = {
-    '---',
-    'title: ' .. name,
-    'tags: []',
-    'created: ' .. os.date '%Y-%m-%d',
-    '---',
-    '',
-    '# ' .. name,
-    '',
-  }
-
-  -- Open the new file
-  vim.cmd('edit ' .. filename)
-end, { desc = "Create new note with today's date" })
