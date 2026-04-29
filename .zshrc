@@ -25,7 +25,8 @@ source $ZSH/oh-my-zsh.sh
 
 # Aliases
 alias lg="lazygit"
-alias cd="z"
+# Only alias cd to zoxide in interactive shells (avoids errors in Claude Code etc.)
+[[ $- == *i* ]] && alias cd="z"
 alias n='nvim'
 
 # Functions
@@ -37,6 +38,10 @@ count_branch_commits() {
     git rev-list --count "$1"..HEAD
 }
 
+# Load custom function groups
+for file in ~/.zshrc.d/*.zsh; do
+  [[ -r "$file" ]] && source "$file"
+done
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm

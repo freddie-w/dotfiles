@@ -8,6 +8,7 @@
     ~/.config/nvim: nvim
     ~/.config/lazygit: lazygit
     ~/.zshrc: .zshrc
+    ~/.tmux.conf: tmux.conf
 
 - shell:
   - [touch ~/.zshrc.local, Creating zsh local file]

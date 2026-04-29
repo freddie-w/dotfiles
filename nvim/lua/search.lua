@@ -48,11 +48,10 @@ vim.api.nvim_create_autocmd('CursorMoved', {
 })
 
 -- Keymaps
-vim.keymap.set('n', '<Esc>', function()
-  vim.cmd 'nohlsearch'
-  vim.api.nvim_buf_clear_namespace(0, search_ns, 0, -1)
-end, { desc = 'Clear search highlights' })
+vim.keymap.set('n', 'n', function()
+  pcall(vim.cmd, 'normal! n')
+end, { desc = 'Next search result' })
 
-vim.keymap.set('n', 'n', function() vim.cmd 'normal! n' end, { desc = 'Next search result' })
-
-vim.keymap.set('n', 'N', function() vim.cmd 'normal! N' end, { desc = 'Previous search result' })
+vim.keymap.set('n', 'N', function()
+  pcall(vim.cmd, 'normal! N')
+end, { desc = 'Previous search result' })
