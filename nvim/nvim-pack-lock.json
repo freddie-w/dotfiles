@@ -13,10 +13,6 @@
       "rev": "7c4faa3540d0781a28588cafbd4dd187a28ac6e3",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
-    "mini.nvim": {
-      "rev": "9990c41f10f54f29a888d13024c9f765037bde23",
-      "src": "https://github.com/nvim-mini/mini.nvim"
-    },
     "nvim-autopairs": {
       "rev": "59bce2eef357189c3305e25bc6dd2d138c1683f5",
       "src": "https://github.com/windwp/nvim-autopairs"
