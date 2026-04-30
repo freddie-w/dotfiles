@@ -2,6 +2,7 @@ if [ -f ~/.zshrc.local ]; then
   source ~/.zshrc.local
 fi
 
+
 export PATH=$HOME/bin:/usr/local/bin:$PATH
 export PATH="/opt/homebrew/bin:$PATH"
 export PATH=$HOME/.cargo/bin:$PATH
@@ -39,9 +40,11 @@ count_branch_commits() {
 }
 
 # Load custom function groups
-for file in ~/.zshrc.d/*.zsh; do
-  [[ -r "$file" ]] && source "$file"
-done
+if [ -f ~/.zshrc.d ]; then
+  for file in ~/.zshrc.d/*.zsh; do
+    [[ -r "$file" ]] && source "$file"
+  done
+fi
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
