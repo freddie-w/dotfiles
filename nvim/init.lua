@@ -4,6 +4,9 @@ require 'autocmds'
 require 'diagnostics'
 require 'statusline'
 
+-- If lockfile gets corrupted, to wipe the plugin directory, run:
+-- rm -rf ~/.local/share/nvim/site/pack/*
+
 vim.api.nvim_create_autocmd('PackChanged', {
   callback = function(ev)
     local name, kind = ev.data.spec.name, ev.data.kind
