@@ -3,4 +3,4 @@ vim.pack.add {
   'https://github.com/nvim-tree/nvim-web-devicons',
 }
 
-vim.cmd [[colorscheme tokyonight]]
+vim.cmd [[colorscheme tokyonight-night]]

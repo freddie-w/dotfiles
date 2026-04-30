@@ -1,3 +1,9 @@
+vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter', 'CursorHold' }, {
+  desc = 'Check for external file changes',
+  group = vim.api.nvim_create_augroup('autoread_on_focus', { clear = true }),
+  command = 'checktime',
+})
+
 vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight when yanking (copying) text',
   group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
