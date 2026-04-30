@@ -2,11 +2,7 @@ require 'options'
 require 'keymaps'
 require 'autocmds'
 require 'diagnostics'
--- todo, move these to plugins?
 require 'statusline'
--- seems to be buggy
--- require 'search'
-require 'gutter-mark'
 
 vim.api.nvim_create_autocmd('PackChanged', {
   callback = function(ev)

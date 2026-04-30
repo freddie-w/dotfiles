@@ -9,8 +9,14 @@ vim.o.relativenumber = true
 -- Don't show the mode, since it's already in the status line
 vim.o.showmode = false
 
--- Sync clipboard between OS and Neovim.
-vim.schedule(function() vim.o.clipboard = 'unnamedplus' end)
+-- Sync clipboard between OS and Neovim
+vim.g.clipboard = {
+  name = 'pbcopy',
+  copy = { ['+'] = 'pbcopy', ['*'] = 'pbcopy' },
+  paste = { ['+'] = 'pbpaste', ['*'] = 'pbpaste' },
+  cache_enabled = 0,
+}
+vim.o.clipboard = 'unnamedplus'
 
 -- Enable break indent
 vim.o.breakindent = true
