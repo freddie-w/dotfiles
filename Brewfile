@@ -9,6 +9,6 @@ brew "zsh"
 brew "neovim"     
 brew "lazygit"   
 brew "stylua"
-
+brew "tmux"
 
 
