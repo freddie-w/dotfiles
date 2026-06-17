@@ -9,6 +9,7 @@
     ~/.config/lazygit: lazygit
     ~/.zshrc: .zshrc
     ~/.tmux.conf: tmux.conf
+    ~/.local/bin/claude-inspect: bin/claude-inspect
 
 - shell:
   - [touch ~/.zshrc.local, Creating zsh local file]

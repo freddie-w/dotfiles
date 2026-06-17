@@ -2,7 +2,6 @@ if [ -f ~/.zshrc.local ]; then
   source ~/.zshrc.local
 fi
 
-
 export PATH=$HOME/bin:/usr/local/bin:$PATH
 export PATH="/opt/homebrew/bin:$PATH"
 export PATH=$HOME/.cargo/bin:$PATH
@@ -22,13 +21,16 @@ plugins=(
    zsh-syntax-highlighting
 )
 
+ZSH_AUTOSUGGEST_USE_ASYNC=true
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+
 source $ZSH/oh-my-zsh.sh
 
 # Aliases
 alias lg="lazygit"
 # Only alias cd to zoxide in interactive shells (avoids errors in Claude Code etc.)
 [[ $- == *i* ]] && alias cd="z"
-alias n='nvim'
+alias n='nvim --listen /tmp/nvim.sock'
 
 # Functions
 count_branch_commits() {
@@ -46,8 +48,5 @@ if [ -f ~/.zshrc.d ]; then
   done
 fi
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
+eval "$(mise activate zsh)"
 eval "$(zoxide init zsh)"
