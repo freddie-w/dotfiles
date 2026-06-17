@@ -3,6 +3,5 @@ vim.pack.add {
 }
 
 require('nvim-autopairs').setup {
-  event = 'InsertEnter',
   map_cr = false,
 }
