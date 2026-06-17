@@ -27,3 +27,24 @@ vim.api.nvim_create_autocmd({ 'WinLeave', 'BufLeave' }, {
   group = 'active_cursorline',
   callback = function() vim.opt_local.cursorline = false end,
 })
+
+-- Dim background when neovim loses focus (tmux pane switch)
+vim.api.nvim_create_autocmd('FocusLost', {
+  group = vim.api.nvim_create_augroup('dim_on_focus_lost', { clear = true }),
+  callback = function()
+    vim.g._normal_bg = vim.fn.synIDattr(vim.fn.hlID('Normal'), 'bg#')
+    vim.api.nvim_set_hl(0, 'Normal', { bg = '#16161e' })
+  end,
+})
+
+vim.api.nvim_create_autocmd('FocusGained', {
+  group = 'dim_on_focus_lost',
+  callback = function()
+    local bg = vim.g._normal_bg
+    if bg and bg ~= '' then
+      vim.api.nvim_set_hl(0, 'Normal', { bg = bg })
+    else
+      vim.api.nvim_set_hl(0, 'Normal', {})
+    end
+  end,
+})

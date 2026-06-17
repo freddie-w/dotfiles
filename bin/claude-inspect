@@ -1,0 +1,31 @@
+#!/bin/bash
+# Open a file in Neovim and switch tmux focus to it
+# If Neovim isn't running, split the current pane left and start it
+# Usage: nv <file> [line]
+
+NVIM_SOCK="/tmp/nvim-$(tmux display-message -p '#{window_id}').sock"
+
+if [ -z "$1" ]; then
+  echo "Usage: nv <file> [line]"
+  exit 1
+fi
+
+FILE="$(realpath "$1" 2>/dev/null || echo "$1")"
+LINE="${2:-1}"
+
+NVIM_PANE=""
+for pane_id in $(tmux list-panes -F '#{pane_id}'); do
+  pane_cmd="$(tmux display-message -p -t "$pane_id" '#{pane_current_command}')"
+  if [ "$pane_cmd" = "nvim" ]; then
+    NVIM_PANE="$pane_id"
+    break
+  fi
+done
+
+if [ -n "$NVIM_PANE" ] && [ -S "$NVIM_SOCK" ]; then
+  nvim --server "$NVIM_SOCK" --remote-send "<Esc>:e +${LINE} ${FILE}<CR>"
+  tmux select-pane -t "$NVIM_PANE"
+else
+  tmux split-window -hbf "nvim --listen ${NVIM_SOCK} +${LINE} '${FILE}'"
+  tmux resize-pane -x 50%
+fi
