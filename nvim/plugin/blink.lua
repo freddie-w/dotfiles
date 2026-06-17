@@ -3,7 +3,17 @@ vim.pack.add {
 }
 
 require('blink.cmp').setup {
-  keymap = { preset = 'default', ['<CR>'] = { 'select_and_accept', 'fallback' } },
+  keymap = {
+    preset = 'default',
+    ['<CR>'] = {
+      'accept',
+      function(cmp)
+        local npairs = require('nvim-autopairs')
+        local result = npairs.autopairs_cr()
+        vim.api.nvim_feedkeys(result, 'n', false)
+      end,
+    },
+  },
   appearance = {
     nerd_font_variant = 'mono',
   },
