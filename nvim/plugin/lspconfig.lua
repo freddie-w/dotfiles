@@ -36,12 +36,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
     map('gd', vim.lsp.buf.definition, 'Go to definition')
     map('<leader>ca', vim.lsp.buf.code_action, '[G]oto Code [A]ction', { 'n', 'x' })
 
-    -- Format on save
-    vim.api.nvim_create_autocmd('BufWritePre', {
-      pattern = '*',
-      callback = function(args) require('conform').format { bufnr = args.buf } end,
-    })
-
     local client = vim.lsp.get_client_by_id(event.data.client_id)
 
     -- Highlight references on hover
