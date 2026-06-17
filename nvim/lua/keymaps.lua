@@ -13,7 +13,7 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 -- Buffers
 vim.keymap.set('n', '<leader>bd', ':bd<CR>', { desc = 'Close current buffer' })
 vim.keymap.set('n', ']b', ':bnext<CR>', { desc = 'Go to next buffer' })
-vim.keymap.set('n', ']b', ':bprev<CR>', { desc = 'Go to previous buffer' })
+vim.keymap.set('n', '[b', ':bprev<CR>', { desc = 'Go to previous buffer' })
 
 -- Windows
 vim.keymap.set('n', '<leader>|', '<C-w>v', { desc = 'Vertical split' })
@@ -31,3 +31,13 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- Incremental selection
 vim.keymap.set('x', 'n', function() require('vim.treesitter._select').select_parent(vim.v.count1) end, { desc = 'Expand selection' })
 vim.keymap.set('x', 'N', function() require('vim.treesitter._select').select_child(vim.v.count1) end, { desc = 'Shrink selection' })
+
+-- Markdown checkboxes
+vim.keymap.set('n', '<leader>x', function()
+  local line = vim.api.nvim_get_current_line()
+  if line:match('%- %[ %]') then
+    vim.api.nvim_set_current_line((line:gsub('%- %[ %]', '- [x]', 1)))
+  elseif line:match('%- %[x%]') then
+    vim.api.nvim_set_current_line((line:gsub('%- %[x%]', '- [ ]', 1)))
+  end
+end, { desc = 'Toggle checkbox' })
