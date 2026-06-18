@@ -3,7 +3,6 @@ vim.pack.add {
 }
 
 require('which-key').setup {
-  event = 'VimEnter',
   delay = 100,
   icons = { mappings = vim.g.have_nerd_font },
 }

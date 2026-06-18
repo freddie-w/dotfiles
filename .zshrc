@@ -30,7 +30,8 @@ source $ZSH/oh-my-zsh.sh
 alias lg="lazygit"
 # Only alias cd to zoxide in interactive shells (avoids errors in Claude Code etc.)
 [[ $- == *i* ]] && alias cd="z"
-alias n='nvim --listen /tmp/nvim.sock'
+# Open nvim with a per-window socket so claude-inspect can connect to it
+alias n='nvim --listen /tmp/nvim-$(tmux display-message -p "#{window_id}" 2>/dev/null || echo $$).sock'
 
 # Functions
 count_branch_commits() {

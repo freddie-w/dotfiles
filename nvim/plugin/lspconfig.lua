@@ -40,7 +40,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
     -- Highlight references on hover
     if client and client:supports_method('textDocument/documentHighlight', event.buf) then
-      local highlight_augroup = vim.api.nvim_create_augroup('lsp-highlight', { clear = false })
+      local highlight_augroup = vim.api.nvim_create_augroup('lsp-highlight-' .. event.buf, { clear = true })
       vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
         buffer = event.buf,
         group = highlight_augroup,
@@ -57,7 +57,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('lsp-detach', { clear = true }),
         callback = function(event2)
           vim.lsp.buf.clear_references()
-          vim.api.nvim_clear_autocmds { group = 'lsp-highlight', buffer = event2.buf }
+          pcall(vim.api.nvim_del_augroup_by_name, 'lsp-highlight-' .. event2.buf)
         end,
       })
     end
