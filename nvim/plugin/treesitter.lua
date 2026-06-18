@@ -12,6 +12,7 @@ local parsers = {
   'dockerfile',
   'markdown',
   'markdown_inline',
+  'python',
 }
 
 require('nvim-treesitter').install(parsers)

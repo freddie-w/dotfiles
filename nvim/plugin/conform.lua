@@ -17,5 +17,6 @@ require('conform').setup {
     html = { 'prettierd' },
     json = { 'prettierd' },
     jsonc = { 'prettierd' },
+    python = { 'ruff_organize_imports', 'ruff_format' },
   },
 }

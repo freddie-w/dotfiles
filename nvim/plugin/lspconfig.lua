@@ -21,7 +21,35 @@ vim.lsp.config('lua_ls', {
   },
 })
 
-vim.lsp.enable { 'lua_ls', 'vtsls', 'tailwindcss' }
+vim.lsp.config('pyright', {
+  settings = {
+    python = {
+      analysis = {
+        typeCheckingMode = 'basic',
+        diagnosticSeverityOverrides = {
+          reportMissingImports = 'error',
+          reportMissingTypeStubs = 'none',
+        },
+      },
+    },
+  },
+})
+
+vim.lsp.config('ruff', {
+  init_options = {
+    settings = {
+      organizeImports = false,
+    },
+  },
+  capabilities = {
+    textDocument = {
+      formatting = vim.NIL,
+      rangeFormatting = vim.NIL,
+    },
+  },
+})
+
+vim.lsp.enable { 'lua_ls', 'vtsls', 'tailwindcss', 'pyright', 'ruff' }
 
 vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('lsp-attach', { clear = true }),
