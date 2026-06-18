@@ -22,12 +22,19 @@ vim.lsp.config('lua_ls', {
 })
 
 vim.lsp.config('pyright', {
+  before_init = function(_, config)
+    local venv = vim.fs.find('.venv', { path = config.root_dir, upward = false, type = 'directory' })[1]
+    if venv then
+      config.settings.python.pythonPath = venv .. '/bin/python'
+    end
+  end,
   settings = {
     python = {
       analysis = {
-        typeCheckingMode = 'basic',
+        typeCheckingMode = 'off',
         diagnosticSeverityOverrides = {
           reportMissingImports = 'error',
+          reportMissingModuleSource = 'none',
           reportMissingTypeStubs = 'none',
         },
       },
