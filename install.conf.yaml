@@ -8,6 +8,7 @@
     ~/.config/nvim: nvim
     ~/.config/lazygit: lazygit
     ~/.zshrc: .zshrc
+    ~/.zshrc.d: zshrc.d
     ~/.tmux.conf: tmux.conf
     ~/.local/bin/claude-inspect: bin/claude-inspect
 

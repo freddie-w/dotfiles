@@ -56,7 +56,7 @@ vim.lsp.config('ruff', {
   },
 })
 
-vim.lsp.enable { 'lua_ls', 'vtsls', 'tailwindcss', 'pyright', 'ruff' }
+vim.lsp.enable { 'lua_ls', 'vtsls', 'eslint', 'tailwindcss', 'pyright', 'ruff' }
 
 vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('lsp-attach', { clear = true }),
