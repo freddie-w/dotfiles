@@ -69,6 +69,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
     -- Keymaps
     map('grn', vim.lsp.buf.rename, '[R]e[n]ame')
     map('gd', vim.lsp.buf.definition, 'Go to definition')
+    map('gr', function() require('fzf-lua').lsp_references() end, '[G]oto [R]eferences')
+    map('<leader>ds', function() require('fzf-lua').lsp_document_symbols() end, '[D]ocument [S]ymbols')
     map('<leader>ca', vim.lsp.buf.code_action, '[G]oto Code [A]ction', { 'n', 'x' })
 
     local client = vim.lsp.get_client_by_id(event.data.client_id)
