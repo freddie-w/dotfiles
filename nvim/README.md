@@ -16,8 +16,8 @@ npm install -g @vtsls/language-server @tailwindcss/language-server
 brew install lua-language-server
 ```
 
-### Telescope
+### fzf-lua
 
 ```sh
-brew install ripgrep fd
+brew install fzf ripgrep fd bat
 ```

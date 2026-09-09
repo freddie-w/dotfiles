@@ -12,7 +12,7 @@ vim.lsp.config('lua_ls', {
         globals = { 'vim' },
       },
       workspace = {
-        library = vim.api.nvim_get_runtime_file('', true),
+        library = vim.api.nvim_get_runtime_file('lua', true),
       },
       telemetry = {
         enable = false,
