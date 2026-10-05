@@ -33,3 +33,15 @@ vim.keymap.set('n', '<leader>sc', function() fzf.files { cwd = vim.fn.stdpath 'c
 vim.keymap.set('n', '<leader>sb', fzf.buffers, { desc = '[S]earch [B]uffers' })
 vim.keymap.set('n', '<leader>/', fzf.lgrep_curbuf, { desc = '[/] Grep in current buffer' })
 vim.keymap.set('n', '<leader>gs', fzf.git_status, { desc = '[G]it [S]tatus' })
+vim.keymap.set('n', '<leader>gd', function()
+  local base = vim.trim(vim.fn.system('git rev-parse -q --verify main >/dev/null && echo main || echo master'))
+  fzf.fzf_exec("git diff -M --name-status " .. base .. "...HEAD | awk '{print $1 \"\\t\" $NF}'", {
+    preview = "git diff -M --color " .. base .. [[...HEAD | awk -v file={2} '/diff --git/{show=0} /diff --git/ && index($0,file)>0{show=1} show']],
+    actions = {
+      ['default'] = function(selected)
+        local file = selected[1]:match('%S+%s+(.*)')
+        if file then vim.cmd('edit ' .. file) end
+      end,
+    },
+  })
+end, { desc = '[G]it branch [D]iff' })
