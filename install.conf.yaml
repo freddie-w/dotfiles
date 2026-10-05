@@ -13,6 +13,9 @@
     ~/.config/mise/config.toml:
       path: mise/global.toml
       create: true
+    ~/.config/yabai/yabairc:
+      path: yabai/yabairc
+      create: true
 
 - shell:
   - [touch ~/.zshrc.local, Creating zsh local file]

@@ -22,6 +22,10 @@ else
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   BREW=/opt/homebrew/bin/brew
 fi
+# Newer Homebrew refuses formulae from third-party taps until they are trusted
+# (stored per user, so a fresh Mac needs this too). Only trust yabai, not the
+# whole tap.
+"${BREW}" trust --formula asmvik/formulae/yabai
 "${BREW}" bundle --file="${BASEDIR}/Brewfile"
 
 git -C "${DOTBOT_DIR}" submodule sync --quiet --recursive
@@ -31,3 +35,8 @@ git submodule update --init --recursive "${DOTBOT_DIR}"
 
 # Install the node version pinned in mise/global.toml
 /opt/homebrew/bin/mise install --yes
+
+# Start yabai (used by fw in zshrc.d/windows.zsh) as a login service. The
+# first run needs Accessibility permission, see README. If it is already
+# running, leave it.
+/opt/homebrew/bin/yabai --start-service 2>/dev/null || true

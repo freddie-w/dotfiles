@@ -35,3 +35,8 @@ brew "pyright"
 
 # Fonts (iTerm2 profile uses JetBrainsMono Nerd Font)
 cask "font-jetbrains-mono-nerd-font"
+
+# Window switching (fw in zshrc.d/windows.zsh). yabai moved from
+# koekeishiya to asmvik.
+tap "asmvik/formulae"
+brew "asmvik/formulae/yabai"
