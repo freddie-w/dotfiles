@@ -9,7 +9,35 @@ DOTBOT_BIN="bin/dotbot"
 BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 cd "${BASEDIR}"
+
+# Homebrew. Work Macs are managed by Workbrew, which refuses plain `brew`
+# calls that don't go through its wrapper, so prefer that when it exists.
+# Personal Macs don't have /opt/workbrew and fall through to plain Homebrew.
+if [[ -x /opt/workbrew/bin/brew ]]; then
+  BREW=/opt/workbrew/bin/brew
+elif [[ -x /opt/homebrew/bin/brew ]]; then
+  BREW=/opt/homebrew/bin/brew
+else
+  echo "Installing Homebrew..."
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  BREW=/opt/homebrew/bin/brew
+fi
+"${BREW}" bundle --file="${BASEDIR}/Brewfile"
+
+# oh-my-zsh and custom plugins (cloned rather than using the installer,
+# which would overwrite ~/.zshrc)
+ZSH_DIR="${HOME}/.oh-my-zsh"
+ZSH_CUSTOM_DIR="${ZSH_DIR}/custom"
+[[ -d "${ZSH_DIR}" ]] || git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git "${ZSH_DIR}"
+[[ -d "${ZSH_CUSTOM_DIR}/plugins/zsh-autosuggestions" ]] ||
+  git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions "${ZSH_CUSTOM_DIR}/plugins/zsh-autosuggestions"
+[[ -d "${ZSH_CUSTOM_DIR}/plugins/zsh-syntax-highlighting" ]] ||
+  git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting "${ZSH_CUSTOM_DIR}/plugins/zsh-syntax-highlighting"
+
 git -C "${DOTBOT_DIR}" submodule sync --quiet --recursive
 git submodule update --init --recursive "${DOTBOT_DIR}"
 
 "${BASEDIR}/${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${BASEDIR}" -c "${CONFIG}" "${@}"
+
+# Install the node version pinned in mise/global.toml
+/opt/homebrew/bin/mise install --yes

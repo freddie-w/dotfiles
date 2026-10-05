@@ -4,6 +4,9 @@ fi
 
 export PATH=$HOME/bin:/usr/local/bin:$PATH
 export PATH="/opt/homebrew/bin:$PATH"
+# Work Macs: Workbrew refuses plain `brew` calls that bypass its wrapper, so
+# it must come before /opt/homebrew/bin. No-op on personal Macs.
+[[ -d /opt/workbrew/bin ]] && export PATH="/opt/workbrew/bin:$PATH"
 export PATH=$HOME/.cargo/bin:$PATH
 export CONFIG_DIR="$HOME/.config/lazygit"
 

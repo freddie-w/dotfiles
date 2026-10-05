@@ -10,6 +10,9 @@
     ~/.zshrc: .zshrc
     ~/.zshrc.d: zshrc.d
     ~/.tmux.conf: tmux.conf
+    ~/.config/mise/config.toml:
+      path: mise/global.toml
+      create: true
 
 - shell:
   - [touch ~/.zshrc.local, Creating zsh local file]
