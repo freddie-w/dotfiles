@@ -2,7 +2,9 @@
 
 ## Fresh install
 
-Install [iTerm2](https://iterm2.com) manually, then:
+Install [iTerm2](https://iterm2.com) manually, then run the commands below. On a
+fresh Mac, the first `git` command will prompt you to install the Xcode Command
+Line Tools. Click Install and rerun the clone once it finishes.
 
 ```
 git clone https://github.com/freddie-w/dotfiles ~/.dotfiles

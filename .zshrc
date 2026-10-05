@@ -27,6 +27,15 @@ plugins=(
 ZSH_AUTOSUGGEST_USE_ASYNC=true
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 
+# Tab completions for brew-installed tools
+fpath=(/opt/homebrew/share/zsh/site-functions $fpath)
+
+# Work Macs: Workbrew owns /opt/homebrew, so zsh treats its completion folders
+# as insecure and skips them (no Tab completion for brew-installed tools like
+# rg, fd, brew). Skip that ownership check when Workbrew is present. Personal
+# Macs own /opt/homebrew themselves, so this stays off there.
+[[ -d /opt/workbrew ]] && ZSH_DISABLE_COMPFIX=true
+
 source $ZSH/oh-my-zsh.sh
 
 # Aliases
