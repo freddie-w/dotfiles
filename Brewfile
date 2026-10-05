@@ -2,6 +2,8 @@
 brew "git"
 brew "mise"
 brew "zoxide"
+brew "zsh-autosuggestions"
+brew "zsh-syntax-highlighting"
 brew "fzf"
 brew "fd"
 brew "bat"

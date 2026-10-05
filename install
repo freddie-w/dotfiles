@@ -24,16 +24,6 @@ else
 fi
 "${BREW}" bundle --file="${BASEDIR}/Brewfile"
 
-# oh-my-zsh and custom plugins (cloned rather than using the installer,
-# which would overwrite ~/.zshrc)
-ZSH_DIR="${HOME}/.oh-my-zsh"
-ZSH_CUSTOM_DIR="${ZSH_DIR}/custom"
-[[ -d "${ZSH_DIR}" ]] || git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git "${ZSH_DIR}"
-[[ -d "${ZSH_CUSTOM_DIR}/plugins/zsh-autosuggestions" ]] ||
-  git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions "${ZSH_CUSTOM_DIR}/plugins/zsh-autosuggestions"
-[[ -d "${ZSH_CUSTOM_DIR}/plugins/zsh-syntax-highlighting" ]] ||
-  git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting "${ZSH_CUSTOM_DIR}/plugins/zsh-syntax-highlighting"
-
 git -C "${DOTBOT_DIR}" submodule sync --quiet --recursive
 git submodule update --init --recursive "${DOTBOT_DIR}"
 

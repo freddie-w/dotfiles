@@ -1,64 +1,31 @@
-if [ -f ~/.zshrc.local ]; then
-  source ~/.zshrc.local
-fi
-
-export PATH=$HOME/bin:/usr/local/bin:$PATH
-export PATH="/opt/homebrew/bin:$PATH"
-# Work Macs: Workbrew refuses plain `brew` calls that bypass its wrapper, so
-# it must come before /opt/homebrew/bin. No-op on personal Macs.
-[[ -d /opt/workbrew/bin ]] && export PATH="/opt/workbrew/bin:$PATH"
-export PATH=$HOME/.cargo/bin:$PATH
-export CONFIG_DIR="$HOME/.config/lazygit"
-
-# Path to oh-my-zsh installation.
-export ZSH=$HOME/.oh-my-zsh
-
-ZSH_THEME="robbyrussell"
+# Homebrew: sets PATH, FPATH (brew completions) and MANPATH. On work Macs,
+# /opt/homebrew/etc/paths lists the Workbrew wrapper first, so `brew` resolves
+# to /opt/workbrew/bin/brew, which Workbrew requires. No-op on personal Macs.
+eval "$(/opt/homebrew/bin/brew shellenv)"
 
 export EDITOR="nvim"
 export VISUAL="nvim"
+export CONFIG_DIR="$HOME/.config/lazygit"
+[[ -d ~/.cargo/bin ]] && path=(~/.cargo/bin $path)
 
-plugins=(
-   git
-   zsh-autosuggestions 
-   zsh-syntax-highlighting
-)
+# Vi mode for the command line (tweaks in zshrc.d/options.zsh)
+bindkey -v
 
-ZSH_AUTOSUGGEST_USE_ASYNC=true
+# Machine-specific settings and secrets (not tracked)
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+
+# Config groups: aliases, completion, fzf, git, options, prompt, tmux
+for file in ~/.zshrc.d/*.zsh; do
+  [[ -r "$file" ]] && source "$file"
+done
+unset file
+
+# Plugins (from Brewfile). Syntax highlighting must load after every widget
+# (fzf, key bindings) is defined so it can wrap them.
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+source "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+source "$HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 
-# Tab completions for brew-installed tools
-fpath=(/opt/homebrew/share/zsh/site-functions $fpath)
-
-# Work Macs: Workbrew owns /opt/homebrew, so zsh treats its completion folders
-# as insecure and skips them (no Tab completion for brew-installed tools like
-# rg, fd, brew). Skip that ownership check when Workbrew is present. Personal
-# Macs own /opt/homebrew themselves, so this stays off there.
-[[ -d /opt/workbrew ]] && ZSH_DISABLE_COMPFIX=true
-
-source $ZSH/oh-my-zsh.sh
-
-# Aliases
-alias n='nvim'
-alias lg="lazygit"
-# Only alias cd to zoxide in interactive shells (avoids errors in Claude Code etc.)
-[[ $- == *i* ]] && alias cd="z"
-
-# Functions
-count_branch_commits() {
-    if [ -z "$1" ]; then
-        echo "Usage: count_branch_commits <base-branch>"
-        return 1
-    fi
-    git rev-list --count "$1"..HEAD
-}
-
-# Load custom function groups
-if [ -d ~/.zshrc.d ]; then
-  for file in ~/.zshrc.d/*.zsh; do
-    [[ -r "$file" ]] && source "$file"
-  done
-fi
-
+# Tool hooks. zoxide's docs say to init it last, after compinit.
 eval "$(mise activate zsh)"
 eval "$(zoxide init zsh)"
