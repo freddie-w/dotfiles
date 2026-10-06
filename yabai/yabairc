@@ -1,4 +1,0 @@
-#!/usr/bin/env sh
-# yabai is only used by fw (zshrc.d/windows.zsh) to list and focus windows.
-# Float layout leaves windows where you put them instead of tiling them.
-yabai -m config layout float
