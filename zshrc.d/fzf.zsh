@@ -33,6 +33,13 @@ fbr() {
     git checkout "$branch"
 }
 
+# cd into a git worktree
+fwt() {
+  local dir
+  dir=$(git worktree list | fzf +m --preview "git -C {1} status --short && echo && git -C {1} log --oneline -20" | awk "{print \$1}") &&
+    [ -n "$dir" ] && cd "$dir"
+}
+
 # cd into a project
 frepo() {
   local dir
