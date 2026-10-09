@@ -1,0 +1,228 @@
+#!/usr/bin/env bash
+# mrs — terminal version of the GitLab "MRs assigned to me" dashboard.
+#
+#   mrs              vim-style picker (fzf) of open MRs assigned to you
+#   mrs -r           ...MRs where your review is requested instead
+#   mrs -p           plain grouped printout (default when not a TTY)
+#   mrs -w           plain printout, refreshed every 60s
+#
+# Picker keys:
+#   j/k  down/up     g/G  top/bottom     ctrl-d/u  half page
+#   o/enter  open in browser             y  copy URL
+#   p  toggle preview (description)      r  reload
+#   m  switch between assigned to me and review requested
+#   c  start a background Claude agent on it: /self-review for yours, /mr-review when
+#      your review is requested. It shows in `claude agents`.
+#   /  search (enter keeps filter, esc clears)    q/esc  quit
+set -euo pipefail
+
+self=$(realpath "$0")
+mode=assigned out=tui
+[[ -t 1 ]] || out=plain
+while getopts "rpwLPC" opt; do
+  case $opt in
+    r) mode=review ;;
+    p) out=plain ;;
+    w) out=watch ;;
+    L) out=lines ;;   # internal: fzf input
+    P) out=preview ;; # internal: fzf preview, takes <project> <iid>
+    C) out=claude ;;  # internal: background review agent, takes <project> <iid> <url>
+    *) sed -n '2,17p' "$0"; exit 1 ;;
+  esac
+done
+
+field=assignedMergeRequests
+[[ $mode == review ]] && field=reviewRequestedMergeRequests
+
+query="{ currentUser { $field(state: opened, first: 100, sort: UPDATED_DESC) { nodes {
+  iid title draft webUrl updatedAt detailedMergeStatus userNotesCount
+  author { username }
+  reviewers { nodes { username mergeRequestInteraction { reviewState } } }
+  project { fullPath }
+  headPipeline { status }
+} } } }"
+
+# Shared jq helpers for both renderers.
+jq_defs='
+  def c($code): "\u001b[\($code)m";
+  def r: c("0");
+  def dim: c("2");
+  def pad($n): . + (" " * ([$n - length, 0] | max));
+  def trunc($n): if length > $n then .[:$n-1] + "…" else . end;
+  def lbl($code; $t): c($code) + ($t | pad(14)) + r;
+  def ago:
+    (now - (sub("\\.[0-9]+";"") | fromdateiso8601)) as $s
+    | if $s < 60 then "now"
+      elif $s < 3600 then "\($s/60|floor)m"
+      elif $s < 86400 then "\($s/3600|floor)h"
+      else "\($s/86400|floor)d" end;
+  def pipeline:
+    (.headPipeline.status // "NONE") as $p
+    | if   $p == "SUCCESS" then c("32") + "✔" + r
+      elif $p == "FAILED" then c("31") + "✘" + r
+      elif ($p | IN("RUNNING","PENDING","PREPARING","WAITING_FOR_RESOURCE","CREATED")) then c("34") + "●" + r
+      elif $p == "NONE" then dim + "·" + r
+      else c("33") + "◐" + r end;
+  def status:
+    .detailedMergeStatus as $m
+    | if .draft then lbl("2"; "Draft")
+      elif $m == "MERGEABLE" then lbl("32"; "Ready")
+      elif $m == "CONFLICT" then lbl("31"; "Conflicts")
+      elif $m == "NEED_REBASE" then lbl("33"; "Needs rebase")
+      elif $m == "REQUESTED_CHANGES" then lbl("31"; "Changes req.")
+      elif $m == "DISCUSSIONS_NOT_RESOLVED" then lbl("33"; "Open threads")
+      elif $m == "NOT_APPROVED" then lbl("33"; "Needs approval")
+      elif ($m | IN("CI_MUST_PASS","CI_STILL_RUNNING")) then lbl("34"; "Waiting on CI")
+      elif ($m | IN("UNCHECKED","CHECKING")) then lbl("2"; "Checking")
+      else lbl("2"; $m | ascii_downcase) end;
+  def reviewers:
+    [.reviewers.nodes[]
+      | .username as $u
+      | (.mergeRequestInteraction.reviewState // "") as $s
+      | if $s == "APPROVED" then c("32") + $u + r
+        elif $s == "REQUESTED_CHANGES" then c("31") + $u + r
+        else dim + $u + r end]
+    | join(" ");
+  def comments: .userNotesCount | if . == 0 then "" elif . == 1 then "1 comment" else "\(.) comments" end;
+  def short:
+    .project.fullPath | split("/") | last
+    | . as $n | {"product-design-system-component-library": "orion", "product-design-system-docs": "orion-docs",
+                 "product-design-system-icons": "pds-icons", "frontend-tracking-library": "tracking"}[$n] // $n;
+  def title: .title | sub("^(Draft|WIP): *"; "");
+  def link($url): "\u001b]8;;\($url)\u001b\\\(.)\u001b]8;;\u001b\\";
+  # Projects ordered by most recent activity, MRs within them likewise.
+  def grouped:
+    .data.currentUser[$field].nodes
+    | group_by(.project.fullPath)
+    | sort_by(map(.updatedAt) | max) | reverse;
+'
+
+fetch() { glab api graphql -f query="$query"; }
+
+render_plain() {
+  local width=${COLUMNS:-$(tput cols)}
+  fetch | jq -r --arg field "$field" --argjson width "$width" "$jq_defs"'
+    (($width - 40) | if . < 20 then 20 else . end) as $tw
+    | grouped
+    | if length == 0 then "No open MRs." else
+        .[]
+        | "\n" + c("1") + .[0].project.fullPath + r,
+          (.[] | .webUrl as $u
+               | "  \(pipeline) \(("!" + .iid) | pad(7) | link($u)) \(title | trunc($tw) | pad($tw)) \(status) "
+                 + dim + "\(.updatedAt | ago | pad(4))\(comments)" + r
+                 + (if (.reviewers.nodes | length) > 0 then "\n            " + dim + "↳ " + r + reviewers else "" end))
+      end'
+}
+
+# Tab-separated for fzf: url, project path, iid, display line.
+render_lines() {
+  local width=${FZF_COLUMNS:-${COLUMNS:-$(tput cols)}}
+  fetch | jq -r --arg field "$field" --argjson width "$width" "$jq_defs"'
+    ([grouped[][] | short | length] | max // 0 | [., 24] | min) as $pw
+    | (($width - $pw - 52) | if . < 20 then 20 else . end) as $tw
+    | grouped[][]
+    | [.webUrl, .project.fullPath, .iid,
+       "\(pipeline) \(c("36") + (short | trunc($pw) | pad($pw)) + r) \(("!" + .iid) | pad(6)) \(title | trunc($tw) | pad($tw)) \(status) "
+         + dim + "\(.updatedAt | ago | pad(4)) \(comments)" + r]
+    | @tsv'
+}
+
+render_preview() {
+  local project=$1 iid=$2 width=${FZF_PREVIEW_COLUMNS:-80} json
+  json=$(glab api graphql -f fullPath="$project" -f iid="$iid" -f query='
+    query($fullPath: ID!, $iid: String!) { project(fullPath: $fullPath) { mergeRequest(iid: $iid) {
+      iid title description draft sourceBranch targetBranch createdAt detailedMergeStatus conflicts
+      author { username } approvalsRequired
+      approvedBy { nodes { username } }
+      reviewers { nodes { username mergeRequestInteraction { reviewState } } }
+      discussions(first: 100) { nodes { resolvable resolved } }
+      headPipeline { status jobs(statuses: [FAILED], first: 20) { nodes { name allowFailure } } }
+    } } }')
+  jq -r --arg field "" --arg project "$project" --argjson width "$width" "$jq_defs"'
+    def row($k; $v): dim + ($k | pad(10)) + r + $v;
+    .data.project.mergeRequest
+    | ([.discussions.nodes[] | select(.resolvable and (.resolved | not))] | length) as $open
+    | ([.headPipeline.jobs.nodes[]? | select(.allowFailure | not) | .name]) as $failed
+    | ((.approvalsRequired // 0) | if . == 0 then 1 else . end) as $needed
+    | (.approvedBy.nodes | length) as $got
+    | c("1") + title + r,
+      dim + "\($project) !\(.iid) · \(.author.username) · opened \(.createdAt | ago) ago" + r,
+      c("36") + .sourceBranch + r + dim + " → " + r + .targetBranch,
+      "",
+      row("Pipeline"; pipeline + " " + ((.headPipeline.status // "none") | ascii_downcase)
+        + (if ($failed | length) > 0 then "  " + c("31") + ($failed | join(", ")) + r else "" end)),
+      row("Status"; status + (if .conflicts then " " + c("31") + "has conflicts" + r else "" end)),
+      row("Approvals"; (if $got >= $needed then c("32") else c("33") end) + "\($got)/\($needed)" + r
+        + (if $got > 0 then " " + dim + ([.approvedBy.nodes[].username] | join(" ")) + r else "" end)),
+      row("Reviewers"; if (.reviewers.nodes | length) > 0 then reviewers else dim + "none" + r end),
+      row("Threads"; if $open > 0 then c("33") + "\($open) unresolved" + r else dim + "all resolved" + r end),
+      dim + ("─" * $width) + r' <<<"$json"
+  jq -r '.data.project.mergeRequest.description // ""' <<<"$json" \
+    | CLICOLOR_FORCE=1 glow -s dark -w "$width" - 2>/dev/null \
+    || jq -r '.data.project.mergeRequest.description // ""' <<<"$json"
+}
+
+# The local clone of a GitLab project under ~/Projects, by its origin remote. Main clones
+# (a .git directory) win over worktrees (a .git file) of the same project.
+repo_dir() {
+  local d test
+  for test in -d -f; do
+    for d in "$HOME"/Projects/*/; do
+      [ "$test" "$d/.git" ] || continue
+      git -C "$d" remote get-url origin 2>/dev/null | grep -qE "[:/]$1(\.git)?$" && { echo "${d%/}"; return; }
+    done
+  done
+  return 1
+}
+
+# Prints one line for the picker's header.
+start_review() {
+  local project=$1 iid=$2 url=$3 skill=self-review name dir id
+  [[ $mode == review ]] && skill=mr-review
+  local short=${project##*/}
+  case $short in
+    product-design-system-component-library) short=orion ;;
+    product-design-system-docs) short=orion-docs ;;
+    product-design-system-icons) short=pds-icons ;;
+    frontend-tracking-library) short=tracking ;;
+  esac
+  name="$([[ $skill == mr-review ]] && echo Review || echo Self-review) $short!$iid"
+  dir=$(repo_dir "$project") || { echo "No clone of $project in ~/Projects, so no agent started"; return; }
+  if id=$(cd "$dir" && claude --bg -n "$name" "/$skill $url batch" 2>&1 | tail -1); then
+    echo "Started \"$name\" in ${dir/#$HOME/~}: $id"
+  else
+    echo "Couldn't start the agent: $id"
+  fi
+}
+
+tui() {
+  local nav='j,k,g,G,o,y,p,r,m,c,q,/'
+  local label=' Assigned to me '
+  [[ $mode == review ]] && label=' Review requested '
+  render_lines | fzf --ansi --no-sort --layout=reverse --no-input \
+    --delimiter='\t' --with-nth=4 --border=rounded --border-label="$label" \
+    --header='o open · y copy · p preview · c claude review · r reload · m assigned/review · / search · q quit' \
+    --preview="$self -P {2} {3}" --preview-window='right,55%,wrap,hidden,<160(down,65%,wrap,hidden)' \
+    --bind="j:down,k:up,g:first,G:last,ctrl-d:half-page-down,ctrl-u:half-page-up" \
+    --bind="o:execute-silent(open {1})" \
+    --bind="y:execute-silent(printf %s {1} | pbcopy)+bell" \
+    --bind="p:toggle-preview,q:abort" \
+    --bind="c:transform-header($self \$([[ \$FZF_BORDER_LABEL == *Review* ]] && echo -r) -C {2} {3} {1})" \
+    --bind="r:reload($self -L \$([[ \$FZF_BORDER_LABEL == *Review* ]] && echo -r))" \
+    --bind="m:transform:[[ \$FZF_BORDER_LABEL == *Review* ]] \
+      && echo 'reload($self -L)+change-border-label( Assigned to me )' \
+      || echo 'reload($self -L -r)+change-border-label( Review requested )'" \
+    --bind="/:show-input+unbind($nav)" \
+    --bind="enter:transform:[[ \$FZF_INPUT_STATE == enabled ]] && echo 'hide-input+rebind($nav)' || echo 'execute-silent(open {1})'" \
+    --bind="esc:transform:[[ \$FZF_INPUT_STATE == enabled ]] && echo 'clear-query+hide-input+rebind($nav)' || echo abort" \
+    >/dev/null || true
+}
+
+case $out in
+  tui) tui ;;
+  plain) render_plain ;;
+  lines) render_lines ;;
+  preview) render_preview "${@:$OPTIND:1}" "${@:$OPTIND+1:1}" ;;
+  claude) start_review "${@:$OPTIND:1}" "${@:$OPTIND+1:1}" "${@:$OPTIND+2:1}" ;;
+  watch) while true; do o=$(render_plain); clear; printf '%s\n' "$o"; sleep 60; done ;;
+esac
