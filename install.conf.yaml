@@ -10,8 +10,6 @@
     ~/.zshrc: .zshrc
     ~/.zshrc.d: zshrc.d
     ~/.tmux.conf: tmux.conf
-    ~/.local/bin/mrs: bin/mrs
-    ~/.local/bin/wis: bin/wis
     ~/.config/mise/config.toml:
       path: mise/global.toml
       create: true
